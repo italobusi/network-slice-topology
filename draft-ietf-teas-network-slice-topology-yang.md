@@ -107,7 +107,7 @@ contributor:
    resources identifiable within the provider's context. There is a minimum
    level of a-prior shared knowledge between the customer and the provider,
    and this is the same information needed to supported connectivity-based
-   network slice services as desdribed in {{?RFC9543}}.
+   network slice services as described in {{?RFC9543}}.
    The provider's responsibility lies in understanding the customer intent topology request and translating that into suitable realization within their domain.
 
    This document introduces a YANG data model, based on {{!RFC7950}}, for
@@ -219,7 +219,7 @@ Please remove this note.
 
 # Modeling Considerations
 
-   A network slice topology is a cusomer intent topology 
+   A network slice topology is a customer intent topology 
    modeled as network topology defined in {{!RFC8345}}, with augmentations. 
    A new network type "network-slice" is defined in this document.  
    When a network topology data instance contains the network-slice 
@@ -239,6 +239,26 @@ Please remove this note.
    described in {{!I-D.ietf-ccamp-otn-topo-yang}}. This flexibility allows
    the creation of technology-specific customer intent topologies tailored to
    specific network requirements.
+
+## Relationship with ACTN Virtual Network (VN)
+   
+   The ACTN VN model, defined in {{!RFC9731}}, provides a self-consistent set of methods for expressing connectivity intents (Type 1 VN),
+   optional path constraints and topology intents (Type 2 VN), using TE metrics and TE objective functions defined in
+   {{!RFC8795}}. Type 2 VN path constraints rely on Type 1 VN for expressing connectivity intents. See {{vn-intro}} for more details.
+   
+   On the other hand, RFC9543 network slice services provide connectivity intents equivalent to Type 1 VN, using SLO and SLE attributes in a technology-agnostic manner not tied to TE technologies. This
+   distinction is detailed in {{Appendix D of !I-D.ietf-teas-ietf-network-slice-nbi-yang}}.
+   
+   The proposed models in this draft aim to deliver a solution equivalent to Type 2 VN to provide optional path constraints and topology intent within the
+   context of RFC 9543 network slicing. These models complement the existing solution outlined in
+   {{!I-D.ietf-teas-ietf-network-slice-nbi-yang}}, while ensuring consistent use of SLO and SLE attributes in a technology-agnostic manner to express customer intent.
+
+In a nutshell:
+
+- the data models, defined in this draft, are intended to be used when there is a need to extend, with more control over network resources allocation by the customer, the connectivity service intent, expressed using the Network Slice Service data model, defined in {{!I-D.ietf-teas-ietf-network-slice-nbi-yang}};
+- the VN type 2 data models, defined in {{!RFC9731}}, are intended to be used when there is a need to extend, with more control over network resources allocation by the customer, the connectivity service intent expressed using the VN type 1 data models, defined in {{!RFC9731}}.
+
+{{Appendix D of !I-D.ietf-teas-ietf-network-slice-nbi-yang}} provides guidance to decide when to use the Network Slice Service data model, defined in {{!I-D.ietf-teas-ietf-network-slice-nbi-yang}}, or the VN type 1 data models, defined in {{!RFC9731}}, to express the connectivity intent.
 
 ## Relationship with Service Attachment Point (SAP) Topology
  
@@ -427,13 +447,14 @@ Please remove this note.
 # Model Tree Structure
 
 ## Network Slice Topology Model Tree Structure
+
 ~~~~
 {::include ./ietf-ns-topo.tree}
 ~~~~
 {: #fig-ietf-ns-topo-tree title="Tree diagram for network slice topology"}
 
-
 ## Network Slice Underlay Path Model Tree Structure
+
 ~~~~
 {::include ./ietf-ns-underlay-path.tree}
 ~~~~
@@ -442,6 +463,7 @@ Please remove this note.
 # YANG Modules
 
 ## YANG Module for Network Slice Topology
+
 ~~~~
    <CODE BEGINS> file "ietf-ns-topo@2025-07-03.yang"
 {::include ./ietf-ns-topo.yang}
@@ -450,6 +472,7 @@ Please remove this note.
 {: #fig-ietf-ns-topo-yang title="YANG model for network slice topology"}   
 
 ## YANG Module for Network Slice Underlay Path
+
 ~~~~
    <CODE BEGINS> file "ietf-ns-underlay-path@2025-07-03.yang"
 {::include ./ietf-ns-underlay-path.yang}
@@ -543,7 +566,7 @@ Please remove this note.
 
 --- back
 
-## Relationship with ACTN Virtual Network (VN) {#vn-intro}
+# Relationship with ACTN Virtual Network (VN) {#vn-intro}
 
    {{?RFC8453}} and {{!RFC9731}} introduce the concept of a Virtual
    Network (VN), which can be presented to customers. These VNs are constructed from
@@ -579,28 +602,8 @@ Please remove this note.
    It empowers customers to define a customized intent topology specifically tailored
    for their network slices.
 
-## Consideration on Reusing ACTN VN for Network Slicing
-
-   The ACTN VN model, defined in {{!RFC9731}}, provides a self-consistent set of methods for expressing connectivity intents (Type 1 VN),
-   optional path constraints and topology intents (Type 2 VN), using TE metrics and TE objective functions defined in
-   {{!RFC8795}}. Type 2 VN path constraints rely on Type 1 VN for expressing connectivity intents. See {{vn-intro}} for more details.
+   Reusing the Type 2 VN for defining customer intent topologies alongside the RFC9543 network slice service model would result in duplicated information for connectivity intents (SDPs and connectivity-constructs vs. LTPs and connectivity matrices), and additionally, would bind the network slice solution to TE technologies (as discussed in {{Appendix D of !I-D.ietf-teas-ietf-network-slice-nbi-yang}} for VN Type 1). 
    
-   On the other hand, RFC9543 network slice services provide connectivity intents equivalent to Type 1 VN, using SLO and SLE attributes in a technology-agnostic manner not tied to TE technologies. This
-   distinction is detailed in {{Appendix D of !I-D.ietf-teas-ietf-network-slice-nbi-yang}}.
-   
-   Reusing the Type 2 VN for defining customer intent topologies alongside the RFC9543 network slice service model would result in duplicated information for connectivity intents (SDPs and connectivity-constructs vs. LTPs and connectivity matrices), and additionally, would bind the network slice solution to TE technologies. 
-   
-   The proposed models in this draft aim to deliver a solution equivalent to Type 2 VN to provide optional path constraints and topology intent within the
-   context of RFC 9543 network slicing. These models complement the existing solution outlined in
-   {{!I-D.ietf-teas-ietf-network-slice-nbi-yang}}, while ensuring consistent use of SLO and SLE attributes in a technology-agnostic manner to express customer intent.
-
-In a nutshell:
-
-- the data models, defined in this draft, are intended to be used when there is a need to extend, with more control over network resources allocation by the customer, the connectivity service intent, expressed using the Network Slice Service data model, defined in {{!I-D.ietf-teas-ietf-network-slice-nbi-yang}};
-- the VN type 2 data models, defined in {{!RFC9731}}, are intended to be used when there is a need to extend, with more control over network resources allocation by the customer, the connectivity service intent expressed using the VN type 1 data models, defined in {{!RFC9731}}.
-
-{{Appendix D of !I-D.ietf-teas-ietf-network-slice-nbi-yang}} provides guidance to decide when to use the Network Slice Service data model, defined in {{!I-D.ietf-teas-ietf-network-slice-nbi-yang}}, or the VN type 1 data models, defined in {{!RFC9731}}, to express the connectivity intent.
-
 # Data Tree for the Example in Section 3
 
 ## Native Topology
